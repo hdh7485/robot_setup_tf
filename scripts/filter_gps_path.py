@@ -100,16 +100,6 @@ first = True
 for gps in gps_data:
     theta = math.degrees(calculate_angle(before2_gps, before_gps, gps))
     if gps == before_gps: continue
-    '''
-    if theta == 0:
-        theta = before_theta
-        print("0!!!!!!!")
-
-    if (0 < theta < 110) and (euclide_distance(gps, before_gps) > 0.1):
-        print("2!!!!!")
-        continue
-    '''
-
     if euclide_distance(gps, before_gps) >= 0.6:
         print("1!!!")
         gps = before_gps + (before_gps - before2_gps)/1.4
