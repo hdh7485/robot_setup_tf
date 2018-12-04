@@ -2,17 +2,13 @@
 #include <sensor_msgs/Imu.h>
 #include <tf/transform_broadcaster.h>
 
-#include "marvelmind_nav/hedge_pos.h"
-#include "marvelmind_nav/hedge_pos_a.h"
-#include "marvelmind_nav/hedge_pos_ang.h"
+#include <marvelmind_nav/hedge_pos_ang.h>
 #include "marvelmind_nav/beacon_pos_a.h"
 #include "marvelmind_nav/hedge_imu_raw.h"
 #include "marvelmind_nav/hedge_imu_fusion.h"
 #include "marvelmind_nav/beacon_distance.h"
 #include <visualization_msgs/Marker.h>
 
-#define HEDGE_POSITION_TOPIC_NAME "/hedge_pos"
-#define HEDGE_POSITION_ADDRESSED_TOPIC_NAME "/hedge_pos_a"
 #define HEDGE_POSITION_WITH_ANGLE_TOPIC_NAME "/hedge_pos_ang"
 
 #define BEACONS_POSITION_ADDRESSED_TOPIC_NAME "/beacons_pos_a"
@@ -30,12 +26,12 @@ float roll, pitch, yaw, w;
 void hedgePosAngCallback(const marvelmind_nav::hedge_pos_ang& hedge_pos_msg)
 {
 	ROS_INFO("Hedgehog data: Address= %d, timestamp= %d, X=%.3f  Y= %.3f  Z=%.3f  Angle: %.1f  flags=%d", 	
-				(int) hedge_pos_msg.address, 
-				(int) hedge_pos_msg.timestamp_ms, 
-				(float) hedge_pos_msg.x_m, (float) hedge_pos_msg.y_m, (float) hedge_pos_msg.z_m,
-				(float) hedge_pos_msg.angle,  
-				(int) hedge_pos_msg.flags);
-				
+			(int) hedge_pos_msg.address, 
+			(int) hedge_pos_msg.timestamp_ms, 
+			(float) hedge_pos_msg.x_m, (float) hedge_pos_msg.y_m, (float) hedge_pos_msg.z_m,
+			(float) hedge_pos_msg.angle,  
+			(int) hedge_pos_msg.flags);
+
 	x = hedge_pos_msg.x_m;
 	y = hedge_pos_msg.y_m;
 	z = hedge_pos_msg.z_m;
@@ -66,18 +62,18 @@ int main(int argc, char** argv){
 					ros::Time::now(), "map", "base_link"));
 
 		/*
-		broadcaster.sendTransform(
-				tf::StampedTransform(
-					tf::Transform(tf::Quaternion(0, 0, 0, 1), tf::Vector3(0.22, 0.0, 0.1)),
-					ros::Time::now(), "base_link", "imu_link"));
+		   broadcaster.sendTransform(
+		   tf::StampedTransform(
+		   tf::Transform(tf::Quaternion(0, 0, 0, 1), tf::Vector3(0.22, 0.0, 0.1)),
+		   ros::Time::now(), "base_link", "imu_link"));
 
-		broadcaster.sendTransform(
-				tf::StampedTransform(
-					tf::Quaternion origin(0,0,0,1);
-					tf::Quaternion rotation(
-					tf::Transform(tf::Quaternion(0, 0, 3.14159, 1), tf::Vector3(0.2, 0.0, 0.2)),
-					ros::Time::now(), "base_link", "laser"));
-					*/
+		   broadcaster.sendTransform(
+		   tf::StampedTransform(
+		   tf::Quaternion origin(0,0,0,1);
+		   tf::Quaternion rotation(
+		   tf::Transform(tf::Quaternion(0, 0, 3.14159, 1), tf::Vector3(0.2, 0.0, 0.2)),
+		   ros::Time::now(), "base_link", "laser"));
+		   */
 
 		ros::spinOnce();
 		r.sleep();
