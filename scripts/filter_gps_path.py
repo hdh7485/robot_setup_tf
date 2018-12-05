@@ -114,7 +114,8 @@ for gps in gps_data:
 LPF_gps = []
 before_gps = filtered_gps[0]
 before_result = filtered_gps[0]
-for gps in filtered_gps:
+#for gps in filtered_gps:
+for gps in gps_data:
     result_x = LPF(gps.x, before_gps.x, before_result.x, 5.0, 1.0)
     result_y = LPF(gps.y, before_gps.y, before_result.y, 5.0, 1.0)
 
@@ -129,5 +130,5 @@ LPF_path = pointlist_2_path(LPF_gps, header3)
 r = rospy.Rate(100) # 10hz
 while not rospy.is_shutdown():
     raw_path_pub.publish(raw_path)
-    filtered_path_pub.publish(filtered_path)
+    #filtered_path_pub.publish(filtered_path)
     LPF_path_pub.publish(LPF_path)
