@@ -43,7 +43,12 @@ def calculate_angle(point1, point2, point3):
     if len1*len2 == 0:
         return 0
     else:
-        return math.acos(inner_product/(len1*len2))
+        temp = inner_product/(len1*len2)
+        if temp > 1.0: 
+            temp = 1.0
+        elif temp < -1.0: 
+            temp = -1.0
+        return math.acos(temp)
 
 def pointlist_2_path(point_list, header):
     path = Path()
@@ -97,12 +102,32 @@ before_gps = gps_data[0]
 before2_gps = gps_data[0]
 filtered_gps = []
 first = True
+
+LPF_gps = []
+before_gps = gps_data[0]
+before_result = gps_data[0]
 for gps in gps_data:
+#for gps in gps_data:
+    result_x = LPF(gps.x, before_gps.x, before_result.x, 3.0, 1.0)
+    result_y = LPF(gps.y, before_gps.y, before_result.y, 3.0, 1.0)
+
+    LPF_gps.append(Point(result_x, result_y))
+    before_result = Point(result_x, result_y)
+    before_gps = gps
+
+raw_path = pointlist_2_path(gps_data, header1)
+filtered_path = pointlist_2_path(filtered_gps, header2)
+LPF_path = pointlist_2_path(LPF_gps, header3)
+
+#for gps in gps_data:
+for gps in LPF_gps:
     theta = math.degrees(calculate_angle(before2_gps, before_gps, gps))
     if gps == before_gps: continue
-    if euclide_distance(gps, before_gps) >= 0.6:
+    #if euclide_distance(gps, before_gps) >= 0.6:
+    if euclide_distance(gps, before_gps) >= 0.5:
         print("1!!!")
-        gps = before_gps + (before_gps - before2_gps)/1.4
+        #gps = before_gps + (before_gps - before2_gps)/1.4
+        gps = before_gps + (before_gps - before2_gps)/1.0
 
     filtered_gps.append(gps)
     before2_gps = before_gps
@@ -114,10 +139,12 @@ for gps in gps_data:
 LPF_gps = []
 before_gps = filtered_gps[0]
 before_result = filtered_gps[0]
-#for gps in filtered_gps:
-for gps in gps_data:
-    result_x = LPF(gps.x, before_gps.x, before_result.x, 5.0, 1.0)
-    result_y = LPF(gps.y, before_gps.y, before_result.y, 5.0, 1.0)
+for gps in filtered_gps:
+#for gps in gps_data:
+    #result_x = LPF(gps.x, before_gps.x, before_result.x, 4.0, 1.0)
+    #result_y = LPF(gps.y, before_gps.y, before_result.y, 4.0, 1.0)
+    result_x = LPF(gps.x, before_gps.x, before_result.x, 3.0, 1.0)
+    result_y = LPF(gps.y, before_gps.y, before_result.y, 3.0, 1.0)
 
     LPF_gps.append(Point(result_x, result_y))
     before_result = Point(result_x, result_y)
@@ -130,5 +157,5 @@ LPF_path = pointlist_2_path(LPF_gps, header3)
 r = rospy.Rate(100) # 10hz
 while not rospy.is_shutdown():
     raw_path_pub.publish(raw_path)
-    #filtered_path_pub.publish(filtered_path)
+    filtered_path_pub.publish(filtered_path)
     LPF_path_pub.publish(LPF_path)
