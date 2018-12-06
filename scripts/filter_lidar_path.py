@@ -72,7 +72,7 @@ def pointlist_2_path(point_list, header):
 
     return path
 
-with open('gps_path.csv', 'rb') as f:
+with open('lidar_path.csv', 'rb') as f:
     reader = csv.reader(f)
     gps_data = list(reader)
     gps_data = [Point(float(x[0]), float(x[1])) for x in gps_data]
